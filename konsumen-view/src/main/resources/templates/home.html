@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Daftar Konsumen</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script>
+      function deleteKonsumen(idKonsumen) {
+        const confirmation = window.confirm(
+          "Apakah Anda yakin ingin menghapus konsumen ini?"
+        );
+
+        if (confirmation) {
+          fetch(`http://localhost:8080/konsumen/delete/${idKonsumen}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.alert(
+                  "Konsumen berhasil dihapus. Halaman akan direload."
+                );
+                window.location.reload();
+              }
+            })
+            .catch((error) => {
+              window.alert("Terjadi kesalahan. Konsumen gagal dihapus.");
+            });
+        }
+      }
+
+      function updateKonsumen(idKonsumen) {
+        setjudulModal("edit");
+        fetch(`http://localhost:8080/konsumen/getById/${idKonsumen}`)
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("nama").value = data.nama;
+            document.getElementById("alamat").value = data.alamat;
+            document.getElementById("kota").value = data.kota;
+            document.getElementById("provinsi").value = data.provinsi;
+            document.getElementById("idKonsumen").value = idKonsumen;
+            $("#addKonsumenModal").modal("show");
+          })
+          .catch((error) => {
+            console.error("Terjadi kesalahan:", error);
+          });
+      }
+
+      function setjudulModal(action) {
+        const modalTitle = document.getElementById("addKonsumenModalLabel");
+        if (action === "edit") {
+          modalTitle.textContent = "Edit Konsumen";
+        } else {
+          modalTitle.textContent = "Add Konsumen";
+
+          document.getElementById("nama").value = "";
+          document.getElementById("alamat").value = "";
+          document.getElementById("kota").value = "";
+          document.getElementById("provinsi").value = "";
+        }
+      }
+    </script>
+
+    <div class="container mt-5">
+      <h1>Daftar Konsumen</h1>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Kota</th>
+            <th>Provinsi</th>
+            <th>Tgl Registrasi</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="konsumen, konsumenStat : ${listKonsumen}">
+            <td th:text="${konsumenStat.count}"></td>
+            <td th:text="${konsumen.nama}"></td>
+            <td th:text="${konsumen.alamat}"></td>
+            <td th:text="${konsumen.kota}"></td>
+            <td th:text="${konsumen.provinsi}"></td>
+            <td th:text="${konsumen.tglRegistrasi}"></td>
+            <td th:text="${konsumen.status}"></td>
+            <td>
+              <button
+                class="btn btn-danger"
+                th:onclick="'deleteKonsumen(\'' + ${konsumen.idKonsumen} + '\')'"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+              <button
+                class="btn btn-primary"
+                th:onclick="'updateKonsumen(\'' + ${konsumen.idKonsumen} + '\')'"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:replace="~{addKonsumen}"></div>
+
+    <div class="container mt-5">
+      <button
+        onclick="setjudulModal('add')"
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#addKonsumenModal"
+      >
+        Add Konsumen
+      </button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </body>
+</html>

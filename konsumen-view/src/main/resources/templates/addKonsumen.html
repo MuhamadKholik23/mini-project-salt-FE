@@ -1,0 +1,130 @@
+<div
+  class="modal fade"
+  id="addKonsumenModal"
+  tabindex="-1"
+  aria-labelledby="addKonsumenModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addKonsumenModalLabel">-</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="addKonsumenForm">
+          <input type="hidden" id="idKonsumen" name="idKonsumen" value="" />
+
+          <div class="form-group">
+            <label>Nama :</label>
+            <input type="text" class="form-control" id="nama" />
+          </div>
+          <div class="form-group">
+            <label>Alamat :</label>
+            <textarea class="form-control" id="alamat"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Kota :</label>
+            <input type="text" class="form-control" id="kota" />
+          </div>
+          <div class="form-group">
+            <label>Provinsi :</label>
+            <input type="text" class="form-control" id="provinsi" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="createKonsumen"
+          onclick="saveKonsumen('add')"
+        >
+          Simpan
+        </button>
+      </div>
+      <div class="alert" id="alertMessage" style="display: none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function saveKonsumen() {
+    const nama = document.getElementById("nama").value;
+    const alamat = document.getElementById("alamat").value;
+    const kota = document.getElementById("kota").value;
+    const provinsi = document.getElementById("provinsi").value;
+
+    const konsumenData = {
+      nama: nama,
+      alamat: alamat,
+      kota: kota,
+      provinsi: provinsi,
+    };
+
+    const modalTitle = document.getElementById("addKonsumenModalLabel");
+    if (modalTitle.textContent == "Add Konsumen") {
+      fetch("http://localhost:8080/konsumen/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(konsumenData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("alertMessage").textContent =
+            "Konsumen berhasil dibuat!";
+          document
+            .getElementById("alertMessage")
+            .classList.add("alert-success");
+          document.getElementById("alertMessage").style.display = "block";
+
+          document.getElementById("addKonsumenModal").style.display = "none";
+          window.location.reload();
+        })
+        .catch((error) => {
+          document.getElementById("alertMessage").textContent =
+            "Terjadi kesalahan. Konsumen gagal dibuat.";
+          document.getElementById("alertMessage").classList.add("alert-danger");
+          document.getElementById("alertMessage").style.display = "block";
+        });
+    } else {
+      const idKonsumen = document.getElementById("idKonsumen").value;
+
+      fetch(`http://localhost:8080/konsumen/update/${idKonsumen}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(konsumenData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("alertMessage").textContent =
+            "Konsumen berhasil diUpdate!";
+          document
+            .getElementById("alertMessage")
+            .classList.add("alert-success");
+          document.getElementById("alertMessage").style.display = "block";
+
+          document.getElementById("addKonsumenModal").style.display = "none";
+          window.location.reload();
+        })
+        .catch((error) => {
+          document.getElementById("alertMessage").textContent =
+            "Terjadi kesalahan. Konsumen gagal diUpdate.";
+          document.getElementById("alertMessage").classList.add("alert-danger");
+          document.getElementById("alertMessage").style.display = "block";
+        });
+    }
+  }
+</script>
