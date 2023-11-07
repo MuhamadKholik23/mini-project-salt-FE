@@ -68,7 +68,33 @@
     </script>
 
     <div class="container mt-5">
-      <h1>Daftar Konsumen</h1>
+      <h2>Daftar Konsumen</h2>
+
+      <form id="searchForm" action="/konsumen/home" method="GET">
+        <div class="mt-5 mb-3 row">
+          <div class="col-3">
+            <input
+              class="form-control"
+              type="text"
+              name="nama"
+              placeholder="Nama"
+            />
+          </div>
+          <div class="col-3">
+            <input
+              class="form-control"
+              type="text"
+              name="kota"
+              placeholder="Kota"
+            />
+          </div>
+        </div>
+
+        <button class="btn btn-secondary btn-sm mb-5" type="submit">
+          Submit
+        </button>
+      </form>
+
       <table class="table table-striped">
         <thead>
           <tr>
@@ -112,7 +138,7 @@
 
     <div th:replace="~{addKonsumen}"></div>
 
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
       <button
         onclick="setjudulModal('add')"
         type="button"
